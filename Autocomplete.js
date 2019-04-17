@@ -1,16 +1,41 @@
+import API from './API';
+
 export default class Autocomplete {
   constructor(rootEl, options = {}) {
     options = Object.assign({ numOfResults: 10, data: [] }, options);
     Object.assign(this, { rootEl, options });
-
     this.init();
   }
 
+  //I check if I have an API to call...
   onQueryChange(query) {
+    if(this.options.apiUrl){
+      /*Request*/
+      const api = new API(this.options.apiUrl);
+      api.get('?q=' + query).then(
+        (response)=>this.parseData(JSON.parse(response).items, query),
+        (status)=>console.log(status)
+      );
+    }else{
+      this.queryData (query);
+    }  
+  }
+
+  //I parse data
+  parseData (response, query) {
+    this.options.data = response.map(item => ({
+      text: item.login,
+      value: item.id
+    }));
+
+    this.queryData (query);
+  }
+
+  //I'm the old onQueryChange
+  queryData (query) {
     // Get data for the dropdown
     let results = this.getResults(query, this.options.data);
     results = results.slice(0, this.options.numOfResults);
-
     this.updateDropdown(results);
   }
 
@@ -36,7 +61,7 @@ export default class Autocomplete {
   createResultsEl(results) {
     const fragment = document.createDocumentFragment();
     results.forEach((result) => {
-      const el = document.createElement('li');
+      const el = document.createElement('option');
       Object.assign(el, {
         className: 'result',
         textContent: result.text,
@@ -73,7 +98,8 @@ export default class Autocomplete {
     this.rootEl.appendChild(this.inputEl)
 
     // Build results dropdown
-    this.listEl = document.createElement('ul');
+    this.listEl = document.createElement('select');
+    this.listEl.multiple="multiple";
     Object.assign(this.listEl, { className: 'results' });
     this.rootEl.appendChild(this.listEl);
   }

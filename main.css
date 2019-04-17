@@ -6,8 +6,13 @@ body {
   box-sizing: border-box;
 }
 
+select:empty {
+  display: none;
+}
+
 .form-group {
   width: 200px;
+  display: inline-block;
 }
 
 ul {
