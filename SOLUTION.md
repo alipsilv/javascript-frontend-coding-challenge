@@ -18,3 +18,6 @@
     I worked with a select instead of an ul, the dropdown supports by default  keyboard shortcuts to navigation.
 
 4) I implemented event captors for keyup and click.
+
+I spent the 4 hours working on the solution. 
+If I had more time I would make improvements in the api.js and autocomplete.js to make those more generic, and I would apply bootstrap in the interface.
